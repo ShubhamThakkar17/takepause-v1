@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1100" viewBox="0 0 900 1100" role="img" aria-label="Photography placeholder">
+  <defs>
+    <radialGradient id="g0" cx="374" cy="611" r="677" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#e8c7a8" stop-opacity="0.73"/><stop offset="1" stop-color="#e8c7a8" stop-opacity="0"/></radialGradient>
+    <radialGradient id="g1" cx="562" cy="347" r="715" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#f2cfc5" stop-opacity="0.57"/><stop offset="1" stop-color="#f2cfc5" stop-opacity="0"/></radialGradient>
+    <radialGradient id="g2" cx="824" cy="527" r="684" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#f2cfc5" stop-opacity="0.52"/><stop offset="1" stop-color="#f2cfc5" stop-opacity="0"/></radialGradient>
+    <radialGradient id="g3" cx="626" cy="191" r="335" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#e8c7a8" stop-opacity="0.57"/><stop offset="1" stop-color="#e8c7a8" stop-opacity="0"/></radialGradient>
+    <radialGradient id="g4" cx="421" cy="904" r="343" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#a2b393" stop-opacity="0.83"/><stop offset="1" stop-color="#a2b393" stop-opacity="0"/></radialGradient>
+    <filter id="paper" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="4" seed="6839" result="t"/>
+      <feDisplacementMap in="SourceGraphic" in2="t" scale="34" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="6839"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+  <rect width="900" height="1100" fill="#fbf6ea"/>
+  <g filter="url(#paper)"><rect width="900" height="1100" fill="url(#g0)"/><rect width="900" height="1100" fill="url(#g1)"/><rect width="900" height="1100" fill="url(#g2)"/><rect width="900" height="1100" fill="url(#g3)"/><rect width="900" height="1100" fill="url(#g4)"/></g>
+  <rect width="900" height="1100" filter="url(#grain)" opacity="0.09" style="mix-blend-mode:multiply"/>
+</svg>

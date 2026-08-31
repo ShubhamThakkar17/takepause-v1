@@ -1,0 +1,135 @@
+@import "tailwindcss";
+@import "./fonts.css";
+
+/* ────────────────────────────────────────────────────────────
+   Take A Pause — design tokens
+   Palette lifted directly from the brand mark: cream paper,
+   brush-ink black, watercolour blush, and a soft sage stem.
+   ──────────────────────────────────────────────────────────── */
+@theme {
+  --color-cream: #fbf6ea;
+  --color-paper: #fefcf6;
+  --color-shell: #f4ecdc;
+  --color-ink: #1e1a17;
+  --color-ink-soft: #4a423b;
+  --color-muted: #857a6f;
+  --color-line: #e4dac9;
+  --color-blush: #e5a091;
+  --color-blush-soft: #f2cfc5;
+  --color-blush-wash: #faeae3;
+  --color-sage: #a2b393;
+  --color-sage-soft: #c9d5bb;
+
+  --font-display: "Cormorant Garamond", "Iowan Old Style", Georgia, serif;
+  --font-sans: "Jost", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-script: "Kaushan Script", "Brush Script MT", cursive;
+
+  --ease-pause: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --spacing-section: 5.5rem;
+}
+
+@layer base {
+  /* Sections breathe more once there is room for it. */
+  @media (min-width: 768px) {
+    :root {
+      --spacing-section: 7rem;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    :root {
+      --spacing-section: 9rem;
+    }
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Lenis drives scrolling; native smooth-scroll would fight it. */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--color-blush-soft);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+}
+
+@layer utilities {
+  /* Editorial display type: tight, low-contrast, generously tracked out. */
+  .u-display {
+    font-family: var(--font-display);
+    font-weight: 300;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+  }
+
+  .u-eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    font-weight: 400;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .u-body {
+    font-size: clamp(0.975rem, 0.4vw + 0.9rem, 1.0625rem);
+    line-height: 1.75;
+    color: var(--color-ink-soft);
+    font-weight: 300;
+  }
+
+  .u-shell {
+    width: min(100% - 2.5rem, 82rem);
+    margin-inline: auto;
+  }
+
+  .u-shell-narrow {
+    width: min(100% - 2.5rem, 56rem);
+    margin-inline: auto;
+  }
+
+  /* Paper grain — keeps the large cream fields from reading as flat CSS. */
+  .u-grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.4;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.28'/%3E%3C/svg%3E");
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
