@@ -1,52 +1,66 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-IN">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#FBF6EA" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#FFF1E6" />
+    <meta name="color-scheme" content="light only" />
 
-    <title>Take A Pause — A Little Peace, Plated | Artisanal Bakery</title>
+    <title>Take Pause — Eggless home bakes in Vadodara</title>
     <meta
       name="description"
-      content="Take A Pause is a small-batch bakery making celebration cakes, custom cakes, brownies, cookies and dessert boxes. Handcrafted bakes, beautiful moments, and little reasons to slow down."
+      content="Take Pause is an eggless home dessertery in Vadodara. Cheesecakes, cookies, brownies and made-to-order cakes for everyday cravings and moments worth celebrating."
     />
-    <link rel="canonical" href="https://takepause.in/" />
+    <link rel="canonical" href="%VITE_SITE_URL%/" />
 
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Take A Pause" />
-    <meta property="og:title" content="Take A Pause — A Little Peace, Plated" />
+    <meta property="og:locale" content="en_IN" />
+    <meta property="og:site_name" content="Take Pause" />
+    <meta property="og:title" content="Take Pause — A little pause. A little sweetness." />
     <meta
       property="og:description"
-      content="Handcrafted bakes, beautiful moments, and little reasons to slow down."
+      content="Eggless home bakes from Vadodara, for everyday cravings and moments worth celebrating."
     />
-    <meta property="og:url" content="https://takepause.in/" />
-    <meta property="og:image" content="https://takepause.in/brand/og.png" />
+    <meta property="og:url" content="%VITE_SITE_URL%/" />
+    <meta property="og:image" content="%VITE_SITE_URL%/brand/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="The Take Pause wordmark with an illustrated celebration cake" />
     <meta name="twitter:card" content="summary_large_image" />
 
     <link rel="icon" href="/brand/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/brand/apple-touch-icon.png" />
+    <link rel="preload" href="/images/scenes/hero.svg" as="image" type="image/svg+xml" />
 
-    <!-- Fonts are served from this origin (see scripts/fetch-fonts.mjs). -->
-    <link rel="preload" href="/fonts/cormorant-garamond-300-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/jost-300-latin.woff2" as="font" type="font/woff2" crossorigin />
-
+    <!-- Only verified details belong here: no address, phone or hours until confirmed. -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "Bakery",
-        "name": "Take A Pause",
-        "slogan": "A little peace, plated",
-        "description": "Small-batch artisanal bakery making celebration cakes, custom cakes, cupcakes, brownies, cookies, pastries and dessert boxes.",
-        "url": "https://takepause.in/",
-        "image": "https://takepause.in/brand/og.png",
-        "priceRange": "₹₹",
-        "servesCuisine": "Bakery",
-        "sameAs": ["https://www.instagram.com/takepause.in"]
+        "name": "Take Pause",
+        "description": "Eggless home dessertery in Vadodara, baking cheesecakes, cookies, brownies and cakes to order.",
+        "url": "%VITE_SITE_URL%/",
+        "image": "%VITE_SITE_URL%/brand/og.png",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Vadodara",
+          "addressRegion": "Gujarat",
+          "addressCountry": "IN"
+        },
+        "areaServed": "Vadodara",
+        "servesCuisine": "Desserts",
+        "sameAs": ["https://www.instagram.com/takepause.in/"]
       }
     </script>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <p style="padding: 2rem; font-family: sans-serif">
+        Take Pause — eggless home bakes in Vadodara. Find us on Instagram:
+        <a href="https://www.instagram.com/takepause.in/">@takepause.in</a>
+      </p>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

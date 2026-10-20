@@ -1,70 +1,47 @@
-import { useRef } from "react";
-import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
-import { story } from "@/content/site";
-import { Reveal, RevealLines, RevealGroup } from "@/components/Reveal";
-import { revealChild } from "@/lib/motion";
+import { story } from "@/config/copy";
 
 export function Story() {
-  const ref = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-
-  // Image travels slower than the page; a quiet depth cue.
-  const imageY = useTransform(scrollYProgress, [0, 1], ["-9%", "9%"]);
-  const imageScale = useTransform(scrollYProgress, [0, 0.5, 1], [1.12, 1.02, 1.12]);
+  const image = story.photo ?? story.illustration;
 
   return (
-    <section id="story" className="u-grain relative bg-cream py-(--spacing-section)">
-      <div className="u-shell grid items-center gap-14 lg:grid-cols-[0.92fr_1fr] lg:gap-24">
-        <div ref={ref} className="relative">
-          <div className="relative aspect-4/5 overflow-hidden rounded-t-[999px] bg-shell">
-            <motion.img
-              src={story.image}
-              alt={story.imageAlt}
+    <section
+      id="story"
+      aria-labelledby="story-title"
+      className="section bg-cream"
+    >
+      <div className="shell grid gap-12 md:grid-cols-[0.85fr_1.15fr] md:items-center lg:gap-20">
+        <figure className="relative mx-auto w-full max-w-[24rem] md:max-w-none">
+          <div className="overflow-hidden rounded-t-full rounded-b-[2rem] border border-cocoa/15 bg-rose-soft">
+            <img
+              src={image.src}
+              alt={image.alt}
+              width={960}
+              height={1200}
               loading="lazy"
-              className="h-full w-full object-cover"
-              style={reduced ? undefined : { y: imageY, scale: imageScale }}
+              className="block aspect-[4/5] w-full object-cover"
             />
           </div>
-
-          {/* Founder's line, set off the corner of the frame. */}
-          <Reveal delay={0.25}>
-            <p className="mt-6 font-display text-lg text-ink-soft italic lg:absolute lg:-right-10 lg:bottom-10 lg:mt-0 lg:max-w-[13rem] lg:rounded-sm lg:bg-cream/90 lg:px-6 lg:py-5 lg:backdrop-blur">
-              {story.signature}
-            </p>
-          </Reveal>
-        </div>
+          <div
+            className="checker absolute -bottom-4 left-8 w-24 [--checker-size:10px]"
+            aria-hidden="true"
+          />
+        </figure>
 
         <div>
-          <Reveal>
-            <p className="u-eyebrow">{story.eyebrow}</p>
-          </Reveal>
-
-          <h2 className="u-display mt-7 text-[clamp(2.2rem,5.2vw,4.4rem)]">
-            <RevealLines lines={["Good things are worth", "slowing down for."]} />
+          <p className="eyebrow">{story.eyebrow}</p>
+          <h2 id="story-title" className="display-lg mt-4 max-w-[14ch]">
+            {story.title}
           </h2>
-
-          {story.body.map((paragraph, i) => (
-            <Reveal key={i} delay={0.18 + i * 0.1}>
-              <p className="u-body mt-8 max-w-[46ch]">{paragraph}</p>
-            </Reveal>
-          ))}
-
-          <RevealGroup className="mt-14 grid grid-cols-3 gap-6 border-t border-line pt-9">
-            {story.stats.map((stat) => (
-              <motion.div key={stat.label} variants={revealChild}>
-                <p className="font-display text-[clamp(1.5rem,3vw,2.35rem)] leading-none text-ink">
-                  {stat.value}
-                </p>
-                <p className="mt-2.5 font-sans text-[0.7rem] leading-relaxed tracking-[0.13em] text-muted uppercase">
-                  {stat.label}
-                </p>
-              </motion.div>
+          <div className="mt-6 max-w-[36rem] space-y-4">
+            {story.paragraphs.map((p) => (
+              <p key={p} className="lede text-cocoa">
+                {p}
+              </p>
             ))}
-          </RevealGroup>
+          </div>
+          <p className="mt-8 font-script text-[2.1rem] leading-none text-cherry">
+            {story.signature}
+          </p>
         </div>
       </div>
     </section>

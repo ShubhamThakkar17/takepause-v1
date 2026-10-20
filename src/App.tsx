@@ -1,47 +1,35 @@
-import { useState } from "react";
-import { useSmoothScroll } from "@/lib/useSmoothScroll";
-import { Preloader } from "@/sections/Preloader";
-import { Nav } from "@/sections/Nav";
-import { Hero } from "@/sections/Hero";
-import { Ribbon } from "@/sections/Ribbon";
-import { Story } from "@/sections/Story";
-import { Menu } from "@/sections/Menu";
-import { Process } from "@/sections/Process";
-import { Occasions } from "@/sections/Occasions";
-import { Philosophy } from "@/sections/Philosophy";
-import { Gallery } from "@/sections/Gallery";
-import { Testimonials } from "@/sections/Testimonials";
-import { Contact } from "@/sections/Contact";
+import { EnquiryProvider } from "@/components/EnquiryDialog";
+import { Bakes } from "@/sections/Bakes";
+import { Celebrations } from "@/sections/Celebrations";
 import { Footer } from "@/sections/Footer";
-import { ScrollProgress } from "@/components/ScrollProgress";
+import { Header } from "@/sections/Header";
+import { Hero } from "@/sections/Hero";
+import { HowToOrder } from "@/sections/HowToOrder";
+import { InstagramFeed } from "@/sections/InstagramFeed";
+import { Pause } from "@/sections/Pause";
+import { Story } from "@/sections/Story";
 
 export default function App() {
-  const [ready, setReady] = useState(false);
-
-  useSmoothScroll();
-
   return (
-    <>
-      <Preloader onDone={() => setReady(true)} />
-      <ScrollProgress />
-      <Nav />
-
-      {/* Held back until the curtain lifts so entrance animations aren't spent
-          behind the preloader. */}
-      <main data-ready={ready}>
+    <EnquiryProvider>
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-full focus:bg-cocoa focus:px-5 focus:py-3 focus:text-cream"
+      >
+        Skip to content
+      </a>
+      <Header />
+      <main id="main">
         <Hero />
-        <Ribbon />
+        <div className="checker" aria-hidden="true" />
+        <Bakes />
+        <Pause />
+        <Celebrations />
         <Story />
-        <Menu />
-        <Process />
-        <Occasions />
-        <Philosophy />
-        <Gallery />
-        <Testimonials />
-        <Contact />
+        <HowToOrder />
+        <InstagramFeed />
       </main>
-
       <Footer />
-    </>
+    </EnquiryProvider>
   );
 }

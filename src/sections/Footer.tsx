@@ -1,45 +1,93 @@
-import { footer, brand, nav, contact } from "@/content/site";
-import { Logo } from "@/components/Logo";
-import { Reveal } from "@/components/Reveal";
+import { Instagram, Mail, Pin, WhatsApp } from "@/components/Icons";
+import { Wordmark } from "@/components/Wordmark";
+import { footer } from "@/config/copy";
+import { brand, contact, links, nav } from "@/config/site";
+import { useEnquiry } from "@/lib/enquiryContext";
 
 export function Footer() {
+  const openEnquiry = useEnquiry();
+  const channels = [
+    links.whatsapp && {
+      href: links.whatsapp,
+      label: "WhatsApp",
+      icon: WhatsApp,
+    },
+    links.instagram && {
+      href: links.instagram,
+      label: `@${contact.instagram}`,
+      icon: Instagram,
+    },
+    links.email && { href: links.email, label: contact.email!, icon: Mail },
+  ].filter(Boolean) as { href: string; label: string; icon: typeof Mail }[];
+
   return (
-    <footer className="u-grain relative overflow-hidden bg-ink pt-24 pb-10 text-cream">
-      <div className="u-shell">
-        <Reveal>
-          <div className="flex flex-col items-center text-center">
-            <Logo size="lg" tone="cream" />
-            <p className="mt-10 font-display text-[clamp(1.3rem,3.4vw,2rem)] font-light text-cream/85 italic">
-              {footer.line}
+    <footer className="scallop-top bg-rose [--scallop:var(--color-cream)]">
+      <div className="shell pt-16 pb-10 md:pt-20">
+        <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
+          <div>
+            <Wordmark size="lg" />
+            <p className="mt-4 max-w-[22rem] text-cocoa">{footer.line}</p>
+            <p className="mt-4 flex items-center gap-2 text-cocoa-soft">
+              <Pin width={18} height={18} className="text-cherry" />
+              {brand.descriptor} · {brand.city}, {brand.region}
             </p>
           </div>
-        </Reveal>
 
-        <nav className="mt-16 flex flex-wrap justify-center gap-x-8 gap-y-3 border-t border-cream/15 pt-10">
-          {nav.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className="font-sans text-[0.72rem] tracking-[0.18em] text-cream/60 uppercase transition-colors duration-400 hover:text-cream"
-            >
-              {item.label}
-            </a>
-          ))}
-          <a
-            href={contact.instagram.href}
-            target="_blank"
-            rel="noreferrer noopener"
-            className="font-sans text-[0.72rem] tracking-[0.18em] text-cream/60 uppercase transition-colors duration-400 hover:text-cream"
-          >
-            Instagram
-          </a>
-        </nav>
+          <nav aria-label="Footer">
+            <h2 className="font-sans text-[0.8125rem] font-semibold tracking-[0.14em] text-cherry uppercase">
+              Explore
+            </h2>
+            <ul className="mt-4 space-y-1">
+              {nav.map((item) => (
+                <li key={item.href}>
+                  <a
+                    href={item.href}
+                    className="inline-block py-1.5 hover:text-cherry hover:underline"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+              <li>
+                <button
+                  type="button"
+                  onClick={() => openEnquiry()}
+                  className="py-1.5 hover:text-cherry hover:underline"
+                >
+                  Enquire to order
+                </button>
+              </li>
+            </ul>
+          </nav>
 
-        <div className="mt-10 flex flex-col items-center justify-between gap-3 text-[0.7rem] tracking-[0.12em] text-cream/45 sm:flex-row">
-          <p>{footer.copyright}</p>
+          {channels.length > 0 && (
+            <div>
+              <h2 className="font-sans text-[0.8125rem] font-semibold tracking-[0.14em] text-cherry uppercase">
+                Say hello
+              </h2>
+              <ul className="mt-4 space-y-1">
+                {channels.map(({ href, label, icon: Icon }) => (
+                  <li key={href}>
+                    <a
+                      href={href}
+                      target={href.startsWith("mailto:") ? undefined : "_blank"}
+                      rel="noreferrer noopener"
+                      className="inline-flex items-center gap-2 py-1.5 hover:text-cherry hover:underline"
+                    >
+                      <Icon width={18} height={18} /> {label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        <div className="mt-14 flex flex-col gap-2 border-t border-cocoa/20 pt-6 text-[0.9rem] text-cocoa-soft sm:flex-row sm:justify-between">
           <p>
-            Baked by {brand.founder} · {brand.domain}
+            © {new Date().getFullYear()} {brand.name}
           </p>
+          <p>Homemade in {brand.city}</p>
         </div>
       </div>
     </footer>

@@ -1,135 +1,206 @@
 @import "tailwindcss";
-@import "./fonts.css";
+@import "@fontsource-variable/fraunces/soft.css";
+@import "@fontsource-variable/fraunces/soft-italic.css";
+@import "@fontsource-variable/dm-sans/index.css";
+@import "@fontsource/yellowtail/400.css";
 
 /* ────────────────────────────────────────────────────────────
-   Take A Pause — design tokens
-   Palette lifted directly from the brand mark: cream paper,
-   brush-ink black, watercolour blush, and a soft sage stem.
+   Take Pause — design tokens
+   Vanilla cream and rose milk grounds, deep cherry for anything
+   you can press, cocoa for reading. Pistachio green is borrowed
+   from the printed menu's checkerboard, and used sparingly.
    ──────────────────────────────────────────────────────────── */
 @theme {
-  --color-cream: #fbf6ea;
-  --color-paper: #fefcf6;
-  --color-shell: #f4ecdc;
-  --color-ink: #1e1a17;
-  --color-ink-soft: #4a423b;
-  --color-muted: #857a6f;
-  --color-line: #e4dac9;
-  --color-blush: #e5a091;
-  --color-blush-soft: #f2cfc5;
-  --color-blush-wash: #faeae3;
-  --color-sage: #a2b393;
-  --color-sage-soft: #c9d5bb;
+  --color-cream: #fff1e6;
+  --color-cream-deep: #fbe4d3;
+  --color-rose: #ffcad4;
+  --color-rose-soft: #ffe1e7;
+  --color-cherry: #8e2938;
+  --color-cherry-deep: #6f1d2b;
+  --color-cocoa: #38231e;
+  --color-cocoa-soft: #5e433b;
+  --color-butter: #f4dea4;
+  --color-pistachio: #1f5b3a;
 
-  --font-display: "Cormorant Garamond", "Iowan Old Style", Georgia, serif;
-  --font-sans: "Jost", ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-script: "Kaushan Script", "Brush Script MT", cursive;
-
-  --ease-pause: cubic-bezier(0.16, 1, 0.3, 1);
-
-  --spacing-section: 5.5rem;
+  --font-display: "Fraunces Variable", "Iowan Old Style", Georgia, serif;
+  --font-sans: "DM Sans Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-script: "Yellowtail", "Brush Script MT", cursive;
 }
 
 @layer base {
-  /* Sections breathe more once there is room for it. */
+  :root {
+    /* The site has one palette, designed for light grounds. Opting out of
+       the browser's automatic dark mode keeps it from inverting the food. */
+    color-scheme: light only;
+    --section-y: 4.5rem;
+    --header-h: 4.25rem;
+  }
+
   @media (min-width: 768px) {
     :root {
-      --spacing-section: 7rem;
+      --section-y: 6.5rem;
+      --header-h: 5rem;
     }
   }
 
   @media (min-width: 1280px) {
     :root {
-      --spacing-section: 9rem;
+      --section-y: 8rem;
     }
   }
 
   html {
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-  }
-
-  /* Lenis drives scrolling; native smooth-scroll would fight it. */
-  html.lenis,
-  html.lenis body {
-    height: auto;
-  }
-  .lenis.lenis-smooth {
-    scroll-behavior: auto !important;
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--header-h) + 1rem);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 
   body {
     background-color: var(--color-cream);
-    color: var(--color-ink);
+    color: var(--color-cocoa);
     font-family: var(--font-sans);
-    font-weight: 300;
-    overflow-x: hidden;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 100;
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
   }
 
   ::selection {
-    background: var(--color-blush-soft);
-    color: var(--color-ink);
+    background: var(--color-rose);
+    color: var(--color-cocoa);
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-ink);
+    outline: 3px solid var(--color-cherry);
     outline-offset: 3px;
-    border-radius: 2px;
+    border-radius: 4px;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
   }
 }
 
-@layer utilities {
-  /* Editorial display type: tight, low-contrast, generously tracked out. */
-  .u-display {
-    font-family: var(--font-display);
-    font-weight: 300;
-    line-height: 1.02;
-    letter-spacing: -0.02em;
+@layer components {
+  .shell {
+    width: min(100% - 2rem, 76rem);
+    margin-inline: auto;
   }
 
-  .u-eyebrow {
+  @media (min-width: 640px) {
+    .shell {
+      width: min(100% - 3rem, 76rem);
+    }
+  }
+
+  .section {
+    padding-block: var(--section-y);
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
     font-family: var(--font-sans);
-    font-size: 0.6875rem;
-    font-weight: 400;
-    letter-spacing: 0.32em;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--color-muted);
+    color: var(--color-cherry);
   }
 
-  .u-body {
-    font-size: clamp(0.975rem, 0.4vw + 0.9rem, 1.0625rem);
-    line-height: 1.75;
-    color: var(--color-ink-soft);
-    font-weight: 300;
+  /* The pause mark: two short bars, used as a bullet and in the wordmark. */
+  .eyebrow::before {
+    content: "";
+    width: 0.6rem;
+    height: 0.7rem;
+    background:
+      linear-gradient(currentColor, currentColor) left / 0.2rem 100% no-repeat,
+      linear-gradient(currentColor, currentColor) right / 0.2rem 100% no-repeat;
+    border-radius: 1px;
   }
 
-  .u-shell {
-    width: min(100% - 2.5rem, 82rem);
-    margin-inline: auto;
+  .display-xl {
+    font-size: clamp(2.9rem, 8.4vw, 6.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
   }
 
-  .u-shell-narrow {
-    width: min(100% - 2.5rem, 56rem);
-    margin-inline: auto;
+  .display-lg {
+    font-size: clamp(2.3rem, 5.6vw, 4.5rem);
+    line-height: 1;
+    letter-spacing: -0.025em;
   }
 
-  /* Paper grain — keeps the large cream fields from reading as flat CSS. */
-  .u-grain::after {
+  .lede {
+    font-size: clamp(1.0625rem, 0.35vw + 1rem, 1.25rem);
+    line-height: 1.6;
+    color: var(--color-cocoa-soft);
+  }
+
+  /* Two rows of checkerboard, like the edge of the printed menu. */
+  .checker {
+    --checker-color: var(--color-pistachio);
+    --checker-size: 14px;
+    height: calc(var(--checker-size) * 2);
+    background: repeating-conic-gradient(var(--checker-color) 0 25%, transparent 0 50%) 0 0 /
+      calc(var(--checker-size) * 2) calc(var(--checker-size) * 2);
+  }
+
+  /* Awning stripes. */
+  .stripes {
+    background: repeating-linear-gradient(
+      90deg,
+      var(--stripe-a, var(--color-rose)) 0 18px,
+      var(--stripe-b, var(--color-cream)) 18px 36px
+    );
+  }
+
+  /* A scalloped edge that hangs from the bottom of whatever comes before it.
+     Set --scallop to the colour of the section above. */
+  .scallop-top {
+    position: relative;
+  }
+
+  .scallop-top::before {
     content: "";
     position: absolute;
-    inset: 0;
+    inset-inline: 0;
+    top: -1px;
+    height: 14px;
+    background: radial-gradient(circle at 50% 0, var(--scallop, var(--color-cream)) 13px, transparent 13.5px) 0 0 /
+      28px 14px repeat-x;
     pointer-events: none;
-    opacity: 0.4;
-    mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.28'/%3E%3C/svg%3E");
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   *,
   *::before,
   *::after {
-    animation-duration: 0.001ms !important;
+    animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
+    transition-duration: 0.01ms !important;
   }
 }
