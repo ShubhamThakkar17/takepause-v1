@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { ArrowRight } from "@/components/Icons";
 import { BakeImageFrame } from "@/components/BakeImageFrame";
+import { Float, Reveal, SplitWords } from "@/components/Motion";
+import { ease, rise, stagger } from "@/lib/motion";
 import { bakesSection } from "@/config/copy";
 import {
   addOnPrice,
@@ -13,7 +16,7 @@ import {
 } from "@/config/menu";
 import { policies } from "@/config/site";
 import { useEnquiry } from "@/lib/enquiryContext";
-import { buttonPrimary, buttonSecondary } from "@/lib/ui";
+import { arrowNudge, buttonPrimary, buttonSecondary } from "@/lib/ui";
 
 const tints = ["bg-rose-soft", "bg-butter/55", "bg-cream-deep"];
 
@@ -40,82 +43,143 @@ export function Bakes() {
       <div className="shell">
         <div className="grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-end">
           <div>
-            <p className="eyebrow">{bakesSection.eyebrow}</p>
+            <Reveal y={16}>
+              <p className="eyebrow">{bakesSection.eyebrow}</p>
+            </Reveal>
             <h2 id="bakes-title" className="display-lg mt-4">
-              {bakesSection.title}
+              <SplitWords text={bakesSection.title} />
             </h2>
           </div>
-          <p className="lede max-w-[34rem] lg:justify-self-end">
-            {bakesSection.body}
-          </p>
+          <Reveal delay={0.15} className="lg:justify-self-end">
+            <p className="lede max-w-[34rem]">{bakesSection.body}</p>
+          </Reveal>
         </div>
 
-        <div
+        <motion.div
           className="mt-10 flex flex-wrap gap-2"
           role="group"
           aria-label="Filter bakes"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.5 }}
+          variants={stagger}
         >
           {filters.map((f) => {
             const pressed = active === f.id;
             return (
-              <button
+              <motion.button
                 key={f.id}
                 type="button"
                 aria-pressed={pressed}
                 onClick={() => setActive(f.id)}
-                className={`min-h-11 rounded-full border px-5 text-[0.95rem] font-medium transition-colors ${
+                variants={rise}
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className={`relative min-h-11 rounded-full border px-5 text-[0.95rem] font-medium transition-colors duration-300 ${
                   pressed
-                    ? "border-cocoa bg-cocoa text-cream"
+                    ? "border-cocoa text-cream"
                     : "border-cocoa/25 bg-white/60 text-cocoa hover:border-cocoa"
                 }`}
               >
-                {f.label}
-              </button>
+                {/* The dark pill slides from one filter to the next. */}
+                {pressed && (
+                  <motion.span
+                    layoutId="filter-pill"
+                    className="absolute inset-[-1px] rounded-full bg-cocoa"
+                    transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                  />
+                )}
+                <span className="relative">{f.label}</span>
+              </motion.button>
             );
           })}
-        </div>
+        </motion.div>
         <p className="sr-only" aria-live="polite">
           Showing {count} {count === 1 ? "bake" : "bakes"}
         </p>
 
         {featured.length > 0 && (
           <ul className="mt-10 grid gap-x-6 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
-            {featured.map((bake, i) => (
-              <li
-                key={bake.id}
-                className={
-                  // An odd last card spans the row on two-column screens.
-                  i === featured.length - 1 && featured.length % 2 === 1
-                    ? "md:col-span-2 lg:col-span-1"
-                    : undefined
-                }
-              >
-                <BakeCard
-                  bake={bake}
-                  tint={tints[i % tints.length]}
-                  wide={i === featured.length - 1 && featured.length % 2 === 1}
-                />
-              </li>
-            ))}
+            <AnimatePresence mode="popLayout" initial={false}>
+              {featured.map((bake, i) => (
+                <motion.li
+                  key={bake.id}
+                  layout
+                  initial={{ opacity: 0, y: 48 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  exit={{
+                    opacity: 0,
+                    scale: 0.92,
+                    transition: { duration: 0.25 },
+                  }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.8, ease, delay: i * 0.1 }}
+                  className={
+                    // An odd last card spans the row on two-column screens.
+                    i === featured.length - 1 && featured.length % 2 === 1
+                      ? "md:col-span-2 lg:col-span-1"
+                      : undefined
+                  }
+                >
+                  <BakeCard
+                    bake={bake}
+                    tint={tints[i % tints.length]}
+                    wide={
+                      i === featured.length - 1 && featured.length % 2 === 1
+                    }
+                  />
+                </motion.li>
+              ))}
+            </AnimatePresence>
           </ul>
         )}
 
-        {shows("cakes") && <CakeBuilder cake={cake} cupcakes={cupcakes} />}
+        <AnimatePresence initial={false}>
+          {shows("cakes") && (
+            <motion.div
+              key="builder"
+              initial={{ opacity: 0, y: 48 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 24, transition: { duration: 0.25 } }}
+              transition={{ duration: 0.7, ease }}
+            >
+              <CakeBuilder cake={cake} cupcakes={cupcakes} />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        {extras.length > 0 && (
-          <div className="mt-16">
-            <h3 className="text-[1.75rem] md:text-[2rem]">
-              Tubs, boxes and specials
-            </h3>
-            <ul className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {extras.map((bake, i) => (
-                <li key={bake.id}>
-                  <ExtraCard bake={bake} tint={tints[(i + 1) % tints.length]} />
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        <AnimatePresence initial={false}>
+          {extras.length > 0 && (
+            <motion.div
+              key="extras"
+              className="mt-16"
+              initial={{ opacity: 0, y: 48 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 24, transition: { duration: 0.25 } }}
+              transition={{ duration: 0.7, ease }}
+            >
+              <h3 className="text-[1.75rem] md:text-[2rem]">
+                <SplitWords text="Tubs, boxes and specials" />
+              </h3>
+              <motion.ul
+                className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, amount: 0.2 }}
+                variants={stagger}
+              >
+                {extras.map((bake, i) => (
+                  <motion.li key={bake.id} variants={rise}>
+                    <ExtraCard
+                      bake={bake}
+                      tint={tints[(i + 1) % tints.length]}
+                    />
+                  </motion.li>
+                ))}
+              </motion.ul>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <p className="mt-14 max-w-[46rem] border-t border-cocoa/15 pt-6 text-[0.95rem] text-cocoa-soft">
           Prices are starting points and depend on size, flavour and design.{" "}
@@ -141,7 +205,7 @@ function BakeCard({
 
   return (
     <article
-      className={`flex h-full flex-col ${wide ? "md:grid md:grid-cols-2 md:items-start md:gap-x-6 lg:flex" : ""}`}
+      className={`group flex h-full flex-col ${wide ? "md:grid md:grid-cols-2 md:items-start md:gap-x-6 lg:flex" : ""}`}
     >
       <BakeImageFrame image={bake.image} tint={tint} />
       <div className="flex flex-1 flex-col">
@@ -159,7 +223,7 @@ function BakeCard({
           {bake.flavours.map((f) => (
             <li
               key={f.name}
-              className="rounded-full border border-cocoa/15 bg-white/70 px-3 py-1 text-[0.85rem]"
+              className="rounded-full border border-cocoa/15 bg-white/70 px-3 py-1 text-[0.85rem] transition-[background-color,transform] duration-300 hover:-translate-y-0.5 hover:bg-rose-soft"
             >
               {f.name}
             </li>
@@ -185,11 +249,7 @@ function BakeCard({
             <span className="underline decoration-cherry/40 decoration-2 underline-offset-4 group-hover:decoration-cherry">
               Enquire about {bake.name.toLowerCase()}
             </span>
-            <ArrowRight
-              width={18}
-              height={18}
-              className="transition-transform group-hover:translate-x-0.5"
-            />
+            <ArrowRight width={18} height={18} className={arrowNudge} />
           </button>
         </div>
       </div>
@@ -211,7 +271,7 @@ function CakeBuilder({ cake, cupcakes }: { cake: Bake; cupcakes: Bake }) {
       className="mt-16 overflow-hidden rounded-[2rem] border border-cocoa/15 bg-rose-soft"
     >
       <div
-        className="checker [--checker-color:var(--color-cherry)] [--checker-size:10px] opacity-90"
+        className="checker checker-slide [--checker-color:var(--color-cherry)] [--checker-size:10px] opacity-90"
         aria-hidden="true"
       />
       <div className="grid gap-8 p-6 sm:p-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-12 lg:p-12">
@@ -261,26 +321,47 @@ function CakeBuilder({ cake, cupcakes }: { cake: Bake; cupcakes: Bake }) {
         </div>
 
         <div className="grid gap-6 sm:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-          <img
-            src={cake.image.src}
-            alt={cake.image.alt}
-            width={600}
-            height={450}
-            loading="lazy"
-            className="w-full rounded-2xl border border-cocoa/15 bg-cream object-contain sm:row-span-3 sm:aspect-[4/5] sm:h-full"
-          />
+          <div className="group overflow-hidden rounded-2xl border border-cocoa/15 bg-cream sm:row-span-3">
+            <Float y={8} duration={5} className="h-full">
+              <img
+                src={cake.image.src}
+                alt={cake.image.alt}
+                width={600}
+                height={450}
+                loading="lazy"
+                className="w-full object-contain transition-transform duration-700 group-hover:scale-105 sm:aspect-[4/5] sm:h-full"
+              />
+            </Float>
+          </div>
           {steps.map((step, i) => (
-            <div key={step.label}>
+            <motion.div
+              key={step.label}
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.6 }}
+              transition={{ duration: 0.7, ease, delay: i * 0.15 }}
+            >
               <h4 className="flex items-center gap-3 font-display text-[1.35rem]">
-                <span className="inline-flex size-8 items-center justify-center rounded-full bg-cherry font-sans text-[0.9rem] font-semibold text-cream">
+                <motion.span
+                  className="inline-flex size-8 items-center justify-center rounded-full bg-cherry font-sans text-[0.9rem] font-semibold text-cream"
+                  initial={{ scale: 0, rotate: -90 }}
+                  whileInView={{ scale: 1, rotate: 0 }}
+                  viewport={{ once: true }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 14,
+                    delay: 0.2 + i * 0.15,
+                  }}
+                >
                   {i + 1}
-                </span>
+                </motion.span>
                 {step.label}
               </h4>
               <p className="mt-2 text-[0.95rem] text-cocoa-soft">
                 {step.items.join(" · ")}
               </p>
-            </div>
+            </motion.div>
           ))}
           <p className="text-[0.9rem] text-cocoa-soft italic sm:col-start-2">
             {cakeBuilder.note}
@@ -296,7 +377,7 @@ function ExtraCard({ bake, tint }: { bake: Bake; tint: string }) {
   const price = priceFor(bake);
 
   return (
-    <article className="flex h-full gap-4 rounded-2xl border border-cocoa/15 bg-white/50 p-4">
+    <article className="group flex h-full gap-4 rounded-2xl border border-cocoa/15 bg-white/50 p-4 transition-[transform,box-shadow,background-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:bg-white/80 hover:shadow-[0_18px_40px_-24px_rgba(56,35,30,0.5)]">
       <BakeImageFrame
         image={bake.image}
         tint={tint}

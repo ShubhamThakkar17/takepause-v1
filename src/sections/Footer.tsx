@@ -1,4 +1,5 @@
 import { Instagram, Mail, Pin, WhatsApp } from "@/components/Icons";
+import { Reveal } from "@/components/Motion";
 import { Wordmark } from "@/components/Wordmark";
 import { footer } from "@/config/copy";
 import { brand, contact, links, nav } from "@/config/site";
@@ -42,7 +43,7 @@ export function Footer() {
                 <li key={item.href}>
                   <a
                     href={item.href}
-                    className="inline-block py-1.5 hover:text-cherry hover:underline"
+                    className="inline-block py-1.5 transition-[color,transform] duration-300 hover:translate-x-1 hover:text-cherry"
                   >
                     {item.label}
                   </a>
@@ -52,7 +53,7 @@ export function Footer() {
                 <button
                   type="button"
                   onClick={() => openEnquiry()}
-                  className="py-1.5 hover:text-cherry hover:underline"
+                  className="py-1.5 transition-[color,transform] duration-300 hover:translate-x-1 hover:text-cherry"
                 >
                   Enquire to order
                 </button>
@@ -72,7 +73,7 @@ export function Footer() {
                       href={href}
                       target={href.startsWith("mailto:") ? undefined : "_blank"}
                       rel="noreferrer noopener"
-                      className="inline-flex items-center gap-2 py-1.5 hover:text-cherry hover:underline"
+                      className="inline-flex items-center gap-2 py-1.5 transition-[color,transform] duration-300 hover:translate-x-1 hover:text-cherry"
                     >
                       <Icon width={18} height={18} /> {label}
                     </a>
@@ -83,7 +84,12 @@ export function Footer() {
           )}
         </div>
 
-        <div className="mt-14 flex flex-col gap-2 border-t border-cocoa/20 pt-6 text-[0.9rem] text-cocoa-soft sm:flex-row sm:justify-between">
+        {/* A big sign-off that rises as the page ends. */}
+        <Reveal y={80} amount={0.4} className="mt-16 overflow-hidden">
+          <Wordmark size="xl" className="text-cocoa/90" />
+        </Reveal>
+
+        <div className="mt-8 flex flex-col gap-2 border-t border-cocoa/20 pt-6 text-[0.9rem] text-cocoa-soft sm:flex-row sm:justify-between">
           <p>
             © {new Date().getFullYear()} {brand.name}
           </p>

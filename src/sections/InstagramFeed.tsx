@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
+import { motion } from "motion/react";
 import { Instagram } from "@/components/Icons";
+import { Reveal, SplitWords } from "@/components/Motion";
+import { rise, stagger } from "@/lib/motion";
 import { instagramSection } from "@/config/copy";
 import { contact, instagramFeed, links } from "@/config/site";
 import { buttonSecondary } from "@/lib/ui";
@@ -57,9 +60,11 @@ export function InstagramFeed() {
       <div className="shell">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="eyebrow">{instagramSection.eyebrow}</p>
+            <Reveal y={16}>
+              <p className="eyebrow">{instagramSection.eyebrow}</p>
+            </Reveal>
             <h2 id="instagram-title" className="display-lg mt-4">
-              {instagramSection.title}
+              <SplitWords text={instagramSection.title} />
             </h2>
             <p className="lede mt-4 max-w-[34rem]">{instagramSection.body}</p>
           </div>
@@ -74,9 +79,15 @@ export function InstagramFeed() {
         </div>
 
         {posts.length > 0 ? (
-          <ul className="mt-10 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-6">
+          <motion.ul
+            className="mt-10 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-6"
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={stagger}
+          >
             {posts.map((post) => (
-              <li key={post.id}>
+              <motion.li key={post.id} variants={rise}>
                 <a
                   href={post.href}
                   target="_blank"
@@ -94,21 +105,26 @@ export function InstagramFeed() {
                     height={400}
                     loading="lazy"
                     decoding="async"
-                    className="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                    className="aspect-square w-full object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-1"
                   />
                 </a>
-              </li>
+              </motion.li>
             ))}
-          </ul>
+          </motion.ul>
         ) : (
-          <a
+          <motion.a
             href={links.instagram}
             target="_blank"
             rel="noreferrer noopener"
-            className="group mt-10 grid overflow-hidden rounded-[2rem] border border-cocoa/15 bg-rose-soft sm:grid-cols-[auto_1fr] sm:items-center"
+            className="group mt-10 grid overflow-hidden rounded-[2rem] border border-cocoa/15 bg-rose-soft transition-[box-shadow,background-color] duration-500 hover:bg-rose hover:shadow-[0_20px_40px_-24px_rgba(56,35,30,0.5)] sm:grid-cols-[auto_1fr] sm:items-center"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            whileHover={{ y: -4 }}
+            transition={{ duration: 0.6 }}
           >
             <div
-              className="checker h-full min-h-7 w-full sm:min-h-0 sm:w-14 [--checker-color:var(--color-cherry)] [--checker-size:14px]"
+              className="checker checker-slide h-full min-h-7 w-full sm:min-h-0 sm:w-14 [--checker-color:var(--color-cherry)] [--checker-size:14px]"
               aria-hidden="true"
             />
             <div className="flex flex-col gap-2 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-10">
@@ -119,7 +135,7 @@ export function InstagramFeed() {
                 instagram.com/{contact.instagram}
               </p>
             </div>
-          </a>
+          </motion.a>
         )}
       </div>
     </section>

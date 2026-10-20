@@ -37,8 +37,40 @@ const C = {
 
 const stroke = (w = 3) =>
   `stroke="${C.ink}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round"`;
+/**
+ * Small looping animations, carried inside each SVG so they also play when
+ * the file is used as a plain <img>. They switch off for anyone who prefers
+ * reduced motion.
+ */
+const ANIMATION = [
+  ".tw,.bob,.flag,.drift,.flame,.grow,.whisk,.sway{transform-box:fill-box}",
+  ".tw{transform-origin:center;animation:tw 2.8s ease-in-out infinite}",
+  "@keyframes tw{0%,100%{transform:scale(1) rotate(0);opacity:1}50%{transform:scale(.55) rotate(45deg);opacity:.55}}",
+  ".bob{transform-origin:50% 0;animation:bob 2.6s ease-in-out infinite}",
+  "@keyframes bob{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(6deg)}}",
+  ".flag{transform-origin:0 50%;animation:flag 1.6s ease-in-out infinite}",
+  "@keyframes flag{0%,100%{transform:skewY(0) scaleX(1)}50%{transform:skewY(-7deg) scaleX(.9)}}",
+  ".drift{transform-origin:center;animation:drift 6s ease-in-out infinite}",
+  "@keyframes drift{0%,100%{transform:translate(0,0) rotate(0)}50%{transform:translate(8px,-16px) rotate(50deg)}}",
+  ".steam{animation:steam 2.8s ease-in-out infinite}",
+  "@keyframes steam{0%{transform:translateY(5px);opacity:0}40%{opacity:.75}100%{transform:translateY(-9px);opacity:0}}",
+  ".flame{transform-origin:50% 100%;animation:flame .8s ease-in-out infinite alternate}",
+  "@keyframes flame{from{transform:scale(1,1) rotate(-4deg)}to{transform:scale(.82,1.14) rotate(4deg)}}",
+  ".squeeze{animation:squeeze 2.4s ease-in-out infinite}",
+  "@keyframes squeeze{0%,100%{transform:translate(0,0)}50%{transform:translate(-6px,16px)}}",
+  ".grow{transform-origin:50% 100%;animation:grow 2.4s ease-in-out infinite}",
+  "@keyframes grow{0%,100%{transform:scale(.86)}50%{transform:scale(1.06)}}",
+  ".whisk{transform-origin:50% 0;animation:bob 1.3s ease-in-out infinite}",
+  ".sway{transform-origin:50% 100%;animation:sway 4s ease-in-out infinite}",
+  "@keyframes sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}",
+  "@media (prefers-reduced-motion:reduce){*{animation:none!important}}",
+].join("");
+
 const svg = (w, h, body) =>
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">${body}</svg>\n`;
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}"><style>${ANIMATION}</style>${body}</svg>\n`;
+
+/** Spreads looping animations out so neighbours never move in step. */
+const delay = (seed) => `animation-delay:-${f(((seed * 7.3) % 30) / 10)}s`;
 const f = (n) => Math.round(n * 10) / 10;
 
 /** Deterministic randomness so re-running the script gives the same art. */
@@ -109,9 +141,11 @@ function rosette(cx, cy, r, fill, lobes = 8) {
 
 function cherry(cx, cy, r, stemTo = [10, -32]) {
   return (
+    `<g class="bob" style="${delay(cx + cy)}">` +
     `<path d="M${cx} ${cy - r * 0.8} q${f(stemTo[0] * 0.2)} ${f(stemTo[1] * 0.6)} ${stemTo[0]} ${stemTo[1]}" fill="none" ${stroke(2.6)}/>` +
     `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${C.cherry}" ${stroke(2.6)}/>` +
-    `<path d="M${f(cx - r * 0.5)} ${f(cy - r * 0.2)} q${f(r * 0.1)} ${f(-r * 0.4)} ${f(r * 0.45)} ${f(-r * 0.45)}" fill="none" stroke="${C.white}" stroke-width="${f(r * 0.22)}" stroke-linecap="round" opacity="0.7"/>`
+    `<path d="M${f(cx - r * 0.5)} ${f(cy - r * 0.2)} q${f(r * 0.1)} ${f(-r * 0.4)} ${f(r * 0.45)} ${f(-r * 0.45)}" fill="none" stroke="${C.white}" stroke-width="${f(r * 0.22)}" stroke-linecap="round" opacity="0.7"/>` +
+    `</g>`
   );
 }
 
@@ -178,7 +212,7 @@ function cylinder(cx, top, rx, ry, h, fill, topFill = fill) {
 }
 
 function sparkle(x, y, s, fill = C.cherry) {
-  return `<path d="M${x} ${y - s} Q${x + s * 0.18} ${y - s * 0.18} ${x + s} ${y} Q${x + s * 0.18} ${y + s * 0.18} ${x} ${y + s} Q${x - s * 0.18} ${y + s * 0.18} ${x - s} ${y} Q${x - s * 0.18} ${y - s * 0.18} ${x} ${y - s} Z" fill="${fill}"/>`;
+  return `<path d="M${x} ${y - s} Q${x + s * 0.18} ${y - s * 0.18} ${x + s} ${y} Q${x + s * 0.18} ${y + s * 0.18} ${x} ${y + s} Q${x - s * 0.18} ${y + s * 0.18} ${x - s} ${y} Q${x - s * 0.18} ${y - s * 0.18} ${x} ${y - s} Z" fill="${fill}" class="tw" style="${delay(x + y)}"/>`;
 }
 
 function plate(cx, cy, rx, ry, fill = C.paper) {
@@ -604,8 +638,8 @@ function heroScene() {
 
   // Topper flag with the pause mark.
   s += `<path d="M${cx + 70} 268 L${cx + 70} 150" ${stroke(3.5)}/>`;
-  s += `<path d="M${cx + 70} 152 L${cx + 160} 168 L${cx + 70} 194 Z" fill="${C.butter}" ${stroke(3)}/>`;
-  s += `<rect x="${cx + 92}" y="162" width="7" height="22" rx="3.5" fill="${C.cherry}"/><rect x="${cx + 106}" y="164" width="7" height="20" rx="3.5" fill="${C.cherry}"/>`;
+  s += `<g class="flag"><path d="M${cx + 70} 152 L${cx + 160} 168 L${cx + 70} 194 Z" fill="${C.butter}" ${stroke(3)}/>`;
+  s += `<rect x="${cx + 92}" y="162" width="7" height="22" rx="3.5" fill="${C.cherry}"/><rect x="${cx + 106}" y="164" width="7" height="20" rx="3.5" fill="${C.cherry}"/></g>`;
 
   // Small plate with a slice in front.
   s += `<g transform="translate(470 744) scale(0.8)">${plate(140, 124, 132, 28)}${cheesecakeSlice(-20, -24, 0.9)}</g>`;
@@ -626,7 +660,7 @@ function heroScene() {
   ]
     .map(
       ([x, y, c, r]) =>
-        `<rect x="${x}" y="${y}" width="22" height="7" rx="3.5" fill="${c}" transform="rotate(${r} ${x} ${y})"/>`,
+        `<g class="drift" style="${delay(x)}"><rect x="${x}" y="${y}" width="22" height="7" rx="3.5" fill="${c}" transform="rotate(${r} ${x} ${y})"/></g>`,
     )
     .join("");
   const defs = `<defs><pattern id="gingham" width="32" height="16" patternUnits="userSpaceOnUse"><rect width="16" height="16" fill="${C.cherry}"/></pattern></defs>`;
@@ -659,9 +693,9 @@ function pipingScene() {
     }),
   );
   // The rosette being piped.
-  s += rosette(602, 606, 36, C.paper, 9);
+  s += `<g class="grow">${rosette(602, 606, 36, C.paper, 9)}</g>`;
   // Piping bag coming in from the top right.
-  s += `<g transform="rotate(-24 560 470)">
+  s += `<g class="squeeze"><g transform="rotate(-24 560 470)">
     <path d="M470 120 Q560 90 650 120 L585 520 L535 520 Z" fill="${C.paper}" ${stroke(3.5)}/>
     <path d="M500 130 L548 500" stroke="${C.ink}" stroke-width="2" opacity="0.25"/>
     <path d="M470 120 Q560 150 650 120" fill="none" ${stroke(3)}/>
@@ -669,7 +703,7 @@ function pipingScene() {
     <path d="M538 520 L582 520 L572 566 L548 566 Z" fill="#CFC3B8" ${stroke(3)}/>
     <path d="M550 566 l4 12 l6 -10 l6 10 l4 -12" fill="none" ${stroke(2.4)}/>
     <path d="M560 90 Q560 40 600 30" fill="none" ${stroke(3)}/>
-  </g>`;
+  </g></g>`;
   // Hand-lettered note.
   s += `<text x="60" y="140" font-family="Georgia, serif" font-style="italic" font-size="44" fill="${C.cherry}">one swirl</text>`;
   s += `<text x="100" y="196" font-family="Georgia, serif" font-style="italic" font-size="44" fill="${C.cherry}">at a time</text>`;
@@ -703,7 +737,7 @@ function kitchenScene() {
   s += jar(420, 100, 120, C.chocMid, "cocoa");
   // Little plant.
   s += `<path d="M700 300 L712 230 L788 230 L800 300 Z" fill="${C.cherry}" ${stroke(3.5)}/>`;
-  s += `<path d="M750 230 q-60 -60 -30 -130 q50 40 30 130 Z" fill="${C.leaf}" ${stroke(3)}/><path d="M750 230 q50 -80 110 -70 q-20 70 -110 70 Z" fill="${C.leaf}" ${stroke(3)}/><path d="M750 230 q-10 -80 30 -160" fill="none" ${stroke(3)}/>`;
+  s += `<g class="sway"><path d="M750 230 q-60 -60 -30 -130 q50 40 30 130 Z" fill="${C.leaf}" ${stroke(3)}/><path d="M750 230 q50 -80 110 -70 q-20 70 -110 70 Z" fill="${C.leaf}" ${stroke(3)}/><path d="M750 230 q-10 -80 30 -160" fill="none" ${stroke(3)}/></g>`;
   s += sparkle(620, 160, 18) + sparkle(560, 230, 9, C.pistachio);
 
   // Counter.
@@ -716,12 +750,12 @@ function kitchenScene() {
   s += `<ellipse cx="330" cy="828" rx="196" ry="32" fill="${C.cream}" ${stroke(2.6)}/>`;
   s += `<path d="M180 830 q50 -20 100 0 t100 0 t90 -4" fill="none" stroke="${C.butterDeep}" stroke-width="4" stroke-linecap="round"/>`;
   s += `<path d="M150 900 q180 50 360 0" fill="none" stroke="${C.cherry}" stroke-width="10" opacity="0.8"/>`;
-  s += `<g transform="rotate(32 420 760)">
+  s += `<g class="whisk"><g transform="rotate(32 420 760)">
     <rect x="410" y="560" width="22" height="150" rx="10" fill="${C.cherry}" ${stroke(3.5)}/>
     <path d="M421 710 C360 760 370 860 421 880 C472 860 482 760 421 710 Z" fill="none" ${stroke(3)}/>
     <path d="M421 710 C390 770 395 850 421 880 C447 850 452 770 421 710 Z" fill="none" ${stroke(3)}/>
     <path d="M421 710 L421 880" ${stroke(3)}/>
-  </g>`;
+  </g></g>`;
   // Rolling pin.
   s += `<g transform="rotate(-8 760 1080)">
     <rect x="610" y="1062" width="300" height="46" rx="23" fill="${C.biscuit}" ${stroke(3.5)}/>
@@ -772,7 +806,7 @@ function smallScene(kind) {
         `<ellipse cx="66" cy="54" rx="36" ry="9" fill="${C.coffee}" ${stroke(2.6)}/>` +
         `<path d="M100 62 q20 0 18 16 q-2 14 -20 12" fill="none" ${stroke(2.6)}/>` +
         `<path d="M40 70 q26 8 52 0" fill="none" stroke="${C.cherry}" stroke-width="4"/>` +
-        `<path d="M56 38 q-8 -10 0 -18 q8 -8 0 -16 M76 38 q-8 -10 0 -18 q8 -8 0 -16" fill="none" ${stroke(2.2)} opacity="0.6"/>` +
+        `<path class="steam" d="M56 38 q-8 -10 0 -18 q8 -8 0 -16 M76 38 q-8 -10 0 -18 q8 -8 0 -16" fill="none" ${stroke(2.2)} opacity="0.6"/>` +
         `<path d="${blob(128, 100, 24, 10, 0.1, 5, 12)}" fill="${C.cookie}" ${stroke(2.4)}/>` +
         chunk(120, 98, 4, 7, C.choc) +
         chunk(134, 102, 4, 9, C.choc),
@@ -803,7 +837,7 @@ function smallScene(kind) {
       `<path d="M30 88 L130 88" stroke="${C.cherry}" stroke-width="4"/>` +
       `<path d="M30 78 L110 66 L130 78 Z" fill="${C.rose}" ${stroke(2.6)}/>` +
       `<rect x="82" y="34" width="8" height="38" rx="2" fill="${C.butter}" ${stroke(2.2)}/>` +
-      `<path d="M86 30 q-8 -10 0 -22 q8 12 0 22 Z" fill="${C.butterDeep}" ${stroke(2.2)}/>` +
+      `<path class="flame" d="M86 30 q-8 -10 0 -22 q8 12 0 22 Z" fill="${C.butterDeep}" ${stroke(2.2)}/>` +
       sparkle(116, 26, 7) +
       sparkle(48, 40, 5, C.pistachio),
   );

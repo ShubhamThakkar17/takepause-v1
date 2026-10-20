@@ -99,7 +99,7 @@ Business details. Each one stays hidden on the site until it's set:
 - [ ] **Enquiry backend:** deploy the Apps Script and set `VITE_ENQUIRY_ENDPOINT`
 - [ ] **Instagram feed URL:** `VITE_INSTAGRAM_FEED_URL`
 - [ ] **Rutvi's story, in her own words:** `story.paragraphs` in `src/config/copy.ts`
-- [ ] **A photo of Rutvi, or of her baking:** `story.photo` in `copy.ts` (4:5, about 960×1200)
+- [x] **A photo of Rutvi:** added as `public/images/rutvi.webp` (`story.photo` in `copy.ts`)
 
 Photos (see below):
 
@@ -137,7 +137,7 @@ To swap in real photos:
 | `scenes/hero.svg` | Hero | `hero.image` in `copy.ts` |
 | `bakes/*.svg` | Menu cards | `bakes[].image` in `menu.ts` |
 | `scenes/texture.svg` | "A pause worth taking" | `pause.image` in `copy.ts` |
-| `scenes/kitchen.svg` | Our story (until there's a photo) | `story.photo` in `copy.ts` |
+| `scenes/kitchen.svg` | Our story, only if `story.photo` is removed | `story.illustration` in `copy.ts` |
 | `scenes/chai.svg`, `gift.svg`, `candle.svg` | Small icons | `pause.moments` in `copy.ts` |
 
 ## SEO and sharing
@@ -158,7 +158,25 @@ Vite · React · TypeScript · Tailwind CSS v4. Fonts are Fraunces (headlines),
 DM Sans (body) and Yellowtail (the occasional handwritten accent). They're
 self-hosted from npm (`@fontsource`), so there are no third-party requests.
 
-There's no animation library. Movement is limited to hover states and smooth
-anchor scrolling, and both turn off when the visitor prefers reduced motion.
+## Motion
+
+Animation comes from [Motion](https://motion.dev). The building blocks are
+in `src/components/Motion.tsx` and the shared timings in `src/lib/motion.ts`,
+so every section moves the same way:
+
+- Headings rise word by word, and content fades up as it scrolls into view.
+- The hero and story images reveal with a wipe, then drift at a slower
+  parallax than the page.
+- The ribbon of bakes under the hero speeds up, and reverses, with your
+  scroll.
+- The menu filters slide a pill between options, and the cards re-flow.
+- The header hides as you scroll down and returns when you scroll up. A thin
+  cherry bar tracks reading progress.
+- Hovering lifts buttons and cards, zooms the images and nudges the arrows.
+- The illustrations carry their own small loops: sparkles twinkle, cherries
+  bob, the flag waves, steam rises and the candle flickers.
+
+Everything that moves respects the visitor's reduced-motion setting: content
+simply appears, and the loops stop.
 The site uses a single light palette and opts out of the browser's automatic
 dark mode, so the food never gets colour-inverted.

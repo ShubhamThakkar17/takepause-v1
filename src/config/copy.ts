@@ -19,6 +19,24 @@ export const hero = {
   },
 };
 
+/** The moving ribbon under the hero. Decorative — every fact here is stated elsewhere too. */
+export const ribbon = {
+  front: [
+    "Cheesecakes",
+    "Cookies",
+    "Brownies",
+    "Cupcakes",
+    "Make-your-own cakes",
+    "Tiramisu on request",
+  ],
+  back: [
+    "100% eggless",
+    "Homemade in Vadodara",
+    "Baked to order",
+    "Book 24–48 hours ahead",
+  ],
+};
+
 export const bakesSection = {
   eyebrow: "The menu",
   title: "Our bakes",
@@ -82,7 +100,13 @@ export const story = {
    * A portrait or a photo of Rutvi baking. Leave null to show the
    * illustration instead. Recommended: 4:5 crop, about 960×1200.
    */
-  photo: null as { src: string; alt: string } | null,
+  photo: {
+    src: "/images/rutvi.webp",
+    srcSmall: "/images/rutvi-480.webp",
+    alt: "Rutvi, founder of Take Pause, smiling with both fists raised in excitement",
+  } as { src: string; srcSmall?: string; alt: string } | null,
+  /** A small note pinned to the photo. */
+  sticker: `Meet ${brand.founder}`,
   illustration: {
     src: "/images/scenes/kitchen.svg",
     alt: "Illustration of a home baking counter with a mixing bowl, whisk and piping bag",

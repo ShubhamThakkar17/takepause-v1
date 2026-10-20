@@ -191,6 +191,29 @@
   }
 }
 
+/* Slow, looping drift for the checkerboard and stripes. */
+@keyframes checker-slide {
+  to {
+    background-position: calc(var(--checker-size) * 2) 0;
+  }
+}
+
+@keyframes stripes-slide {
+  to {
+    background-position: 36px 0;
+  }
+}
+
+@layer utilities {
+  .checker-slide {
+    animation: checker-slide 3s linear infinite;
+  }
+
+  .stripes-slide {
+    animation: stripes-slide 2.4s linear infinite;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

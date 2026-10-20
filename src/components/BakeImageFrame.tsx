@@ -27,7 +27,7 @@ export function BakeImageFrame({
         height={300}
         loading="lazy"
         decoding="async"
-        className={`size-full ${image.kind === "photo" ? "object-cover" : "object-contain"}`}
+        className={`size-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.07] group-hover:-rotate-2 ${image.kind === "photo" ? "object-cover" : "object-contain"}`}
       />
     </div>
   );
