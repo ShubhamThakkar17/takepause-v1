@@ -19,6 +19,24 @@ npm run lint
 `dist/` is plain static files. Netlify, Vercel, Cloudflare Pages or any static
 host can serve it as-is.
 
+## Deploying to Vercel
+
+`vercel.json` already holds the build settings and cache headers.
+
+1. In Vercel, click **Add New → Project** and import the
+   `ShubhamThakkar17/takepause-v1` GitHub repository. Vercel detects Vite, so
+   leave the defaults.
+2. Under **Environment Variables**, add the ones you have from
+   `.env.example`. All of them are optional, and the site works without them.
+3. Click **Deploy**. From then on, every push to the production branch
+   redeploys, and every other branch gets its own preview URL.
+4. When you're ready, connect `takepause.in` under **Settings → Domains**.
+
+If you prefer the command line: `npx vercel` creates a preview deployment, and
+`npx vercel --prod` deploys to production.
+
+Changed an environment variable? Redeploy. They're baked in at build time.
+
 ## Where to change things
 
 | What | File |
